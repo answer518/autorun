@@ -1,0 +1,21 @@
+{
+  "name": "autorun",
+  "version": "1.0.0",
+  "description": " project",
+  "author": "guotingjie <iamnabob@126.com>",
+  "scripts": {
+    "dev": "node app.js",
+    "build": "node build/app.js",
+    "test": ""
+  },
+  "dependencies": {
+    "fs": "0.0.2",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "cheerio": "^0.20.0",
+    "superagent": "^2.0.0"
+  },
+  "main": "app.js",
+  "license": "ISC"
+}
