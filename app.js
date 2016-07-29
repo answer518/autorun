@@ -34,6 +34,9 @@ emitter.on("setCookeie", getMytask); //监听setCookeie事件
 
 function getMytask(cookie) {
 
+    // closeMytask(cookie, '8775', '新标签页beta2.0需求讨论', '2016-07-29', '3');
+    // getMytaskById(cookie,'8775');
+    // return false;
     superagent.get('http://mx5.maxthon.net/index.php?m=my&f=task')
         .set("Cookie", cookie[2])
         .end((err, response) => {
@@ -115,60 +118,8 @@ function fieldPayload(opts) {
         payload.push(getfield(id,opts.field[id]));
     }
 
-    // payload.push("");
+    payload.push("");
     return payload.join(getBoundaryBorder(opts.boundary));
-}
-
-function getMytaskById(cookie, taskID) {
-    superagent.get('http://mx5.maxthon.net/index.php?m=task&f=edit&taskID=' + taskID)
-        .set("Cookie", cookie[2])
-        .end((err, response) => {
-
-            if (err) console.log(err)
-            let $ = cheerio.load(response.text);
-
-            let dataform = $('#dataform');
-            var options = {
-                'url' : 'http://mx5.maxthon.net/index.php?m=task&f=edit&taskID=' + taskID,
-                "file":"",
-                "filename": "",
-                "param":"file",
-                'cookie':cookie,
-                "field":{ //其余post字段
-                    'name' : dataform.find('#name').val(),
-                    'desc' : dataform.find('#desc').val(),
-                    'comment' : dataform.find('#comment').val(),
-                    // 'files[]' : '',
-                    'labels[]' : '', 
-                    'consumed' : '1',
-                    'project' : dataform.find('#project').val(),
-                    'module' : dataform.find('#module').val(),
-                    'story' : '',
-                    'assignedTo' : dataform.find('#assignedTo').val(),
-                    'type' : dataform.find('#type').val(),
-                    'status' : dataform.find('#status').val(),
-                    'pri' : dataform.find('#pri').val(),
-                    'mailto[]' : '',
-                    'estStarted' : dataform.find('#estStarted').val(),
-                    'realStarted' : dataform.find('#realStarted').val(),
-                    'deadline' : dataform.find('#deadline').val(),
-                    'estimate' : dataform.find('#estimate').val(),
-                    'left' : dataform.find('#left').val(),
-                    'finishedBy' : dataform.find('#finishedBy').val(),
-                    'finishedDate' : dataform.find('#finishedDate').val(),
-                    'canceledBy' :dataform.find('#canceledBy').val(),
-                    'canceledDate' : dataform.find('#canceledDate').val(),
-                    'closedBy' : dataform.find('#closedBy').val(),
-                    'closedReason' : dataform.find('#closedReason').val(),
-                    'closedDate' : dataform.find('#closedDate').val()
-                },
-                "boundary":"---------------------------WebKitFormBoundary"+getBoundary()
-            };
-            
-            console.log(options);
-            return false;
-            postRequest(options);
-        });
 }
 
 //post数据
@@ -193,8 +144,8 @@ function postRequest (opts, fn) {
         };
         options.method='POST';
 
-        console.log(body);
-        return false;
+        // console.log(body);
+        // return false;
         var req=http.request(options,function(res){
             var data='';
             res.on('data', function (chunk) {
@@ -271,6 +222,58 @@ function startMytask(cookie, taskID, taskName) {
                 if(resCode == '200') {
                     console.log('任务【' + taskID + '】' + taskName + ' 已经正确的启动!');
                 }
+            });
+        });
+}
+
+function getMytaskById(cookie, taskID) {
+    superagent.get('http://mx5.maxthon.net/index.php?m=task&f=edit&taskID=' + taskID)
+        .set("Cookie", cookie[2])
+        .end((err, response) => {
+
+            if (err) console.log(err)
+            let $ = cheerio.load(response.text);
+
+            let dataform = $('#dataform');
+            var options = {
+                'url' : 'http://mx5.maxthon.net/index.php?m=task&f=edit&taskID=' + taskID,
+                "file":"",
+                "filename": "",
+                "param":"file",
+                'cookie':cookie,
+                "field":{ //其余post字段
+                    'name' : dataform.find('#name').val(),
+                    'desc' : dataform.find('#desc').val(),
+                    'comment' : dataform.find('#comment').val(),
+                    // 'files[]' : '',
+                    'labels[]' : '', 
+                    'consumed' : '1',
+                    'project' : dataform.find('#project').val(),
+                    'module' : dataform.find('#module').val(),
+                    'story' : '',
+                    'assignedTo' : dataform.find('#assignedTo').val(),
+                    'type' : dataform.find('#type').val(),
+                    'status' : dataform.find('#status').val(),
+                    'pri' : dataform.find('#pri').val(),
+                    'mailto[]' : '',
+                    'estStarted' : dataform.find('#estStarted').val(),
+                    'realStarted' : dataform.find('#realStarted').val(),
+                    'deadline' : dataform.find('#deadline').val(),
+                    'estimate' : dataform.find('#estimate').val(),
+                    'left' : dataform.find('#left').val(),
+                    'finishedBy' : dataform.find('#finishedBy').val(),
+                    'finishedDate' : dataform.find('#finishedDate').val(),
+                    'canceledBy' :dataform.find('#canceledBy').val(),
+                    'canceledDate' : dataform.find('#canceledDate').val(),
+                    'closedBy' : dataform.find('#closedBy').val(),
+                    'closedReason' : dataform.find('#closedReason').val(),
+                    'closedDate' : dataform.find('#closedDate').val()
+                },
+                "boundary":"---------------------------WebKitFormBoundary"+getBoundary()
+            };
+            
+            postRequest(options, function(statusCode) {
+                
             });
         });
 }
