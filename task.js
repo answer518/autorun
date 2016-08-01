@@ -59,6 +59,8 @@ Task.list = function(cookie) {
                 if(status === '未开始') {
 
                     Task.start(cookie, taskID, taskName);
+
+
                     return true;
                 }
 
@@ -75,6 +77,58 @@ Task.list = function(cookie) {
             });
         });
 };
+
+// Task.getMytaskById = function(cookie, taskID) {
+//     superagent.get('http://mx5.maxthon.net/index.php?m=task&f=edit&taskID=' + taskID)
+//         .set("Cookie", cookie[2])
+//         .end((err, response) => {
+
+//             if (err) console.log(err)
+//             let $ = cheerio.load(response.text);
+
+//             let dataform = $('#dataform');
+//             var options = {
+//                 'url' : 'http://mx5.maxthon.net/index.php?m=task&f=edit&taskID=' + taskID,
+//                 "file":"",
+//                 "filename": "",
+//                 "param":"file",
+//                 'cookie':cookie,
+//                 "field":{ //其余post字段
+//                     'name' : dataform.find('#name').val(),
+//                     'desc' : dataform.find('#desc').val(),
+//                     'comment' : dataform.find('#comment').val(),
+//                     // 'files[]' : '',
+//                     'labels[]' : '', 
+//                     'consumed' : '1',
+//                     'project' : dataform.find('#project').val(),
+//                     'module' : dataform.find('#module').val(),
+//                     'story' : '',
+//                     'assignedTo' : dataform.find('#assignedTo').val(),
+//                     'type' : dataform.find('#type').val(),
+//                     'status' : dataform.find('#status').val(),
+//                     'pri' : dataform.find('#pri').val(),
+//                     'mailto[]' : '',
+//                     'estStarted' : dataform.find('#estStarted').val(),
+//                     'realStarted' : dataform.find('#realStarted').val(),
+//                     'deadline' : dataform.find('#deadline').val(),
+//                     'estimate' : dataform.find('#estimate').val(),
+//                     'left' : dataform.find('#left').val(),
+//                     'finishedBy' : dataform.find('#finishedBy').val(),
+//                     'finishedDate' : dataform.find('#finishedDate').val(),
+//                     'canceledBy' :dataform.find('#canceledBy').val(),
+//                     'canceledDate' : dataform.find('#canceledDate').val(),
+//                     'closedBy' : dataform.find('#closedBy').val(),
+//                     'closedReason' : dataform.find('#closedReason').val(),
+//                     'closedDate' : dataform.find('#closedDate').val()
+//                 },
+//                 "boundary":"---------------------------WebKitFormBoundary"+getBoundary()
+//             };
+
+//             postRequest(options, function(statusCode) {
+
+//             });
+//         });
+// }
 
 /**
  * 任务关闭
@@ -126,31 +180,33 @@ Task.close = function(cookie, taskID, taskName, finishDate, finishHour) {
  */
 Task.start = function(cookie, taskID, taskName) {
 
-    let url = 'http://mx5.maxthon.net/index.php?m=task&f=start&taskID=' + taskID + '&onlybody=yes';
-    superagent.get(url)
+    superagent.get('http://mx5.maxthon.net/index.php?m=task&f=edit&taskID=' + taskID)
         .set("Cookie", cookie[2]) //在resquest中设置得到的cookie
         .end((err, response) => {
 
             if (err) console.log(err)
             let $ = cheerio.load(response.text);
 
-            var options = {
-                'url': url,
-                'cookie': cookie,
-                "field": { //其余post字段
-                    'comment': $('#comment').val(),
-                    'consumed': '0',
-                    'left': $('#left').val(),
-                    'realStarted': $('#realStarted').val()
-                }
-            };
+            // 任务预计开始时间如果是下一个工作日, 则启动任务
+            if($('#estStarted').val() === date.nextDay()) {
+                 let options = {
+                    'url': 'http://mx5.maxthon.net/index.php?m=task&f=start&taskID=' + taskID + '&onlybody=yes',
+                    'cookie': cookie,
+                    "field": { //其余post字段
+                        'comment': $('#comment').val(),
+                        'consumed': '0',
+                        'left': $('#left').val(),
+                        'realStarted': $('#realStarted').val()
+                    }
+                };
 
-            postRequest(options, function(resCode) {
+                postRequest(options, function(resCode) {
 
-                if (resCode == '200') {
-                    console.log('任务【' + taskID + '】' + taskName + ' 已经正确的启动!');
-                }
-            });
+                    if (resCode == '200') {
+                        console.log('任务【' + taskID + '】' + taskName + ' 已经正确的启动!');
+                    }
+                });
+            }
 
         });
 }
@@ -264,55 +320,3 @@ function fieldPayload(opts) {
     payload.push("");
     return payload.join(getBoundaryBorder(opts.boundary));
 }
-
-// function getMytaskById(cookie, taskID) {
-//     superagent.get('http://mx5.maxthon.net/index.php?m=task&f=edit&taskID=' + taskID)
-//         .set("Cookie", cookie[2])
-//         .end((err, response) => {
-
-//             if (err) console.log(err)
-//             let $ = cheerio.load(response.text);
-
-//             let dataform = $('#dataform');
-//             var options = {
-//                 'url' : 'http://mx5.maxthon.net/index.php?m=task&f=edit&taskID=' + taskID,
-//                 "file":"",
-//                 "filename": "",
-//                 "param":"file",
-//                 'cookie':cookie,
-//                 "field":{ //其余post字段
-//                     'name' : dataform.find('#name').val(),
-//                     'desc' : dataform.find('#desc').val(),
-//                     'comment' : dataform.find('#comment').val(),
-//                     // 'files[]' : '',
-//                     'labels[]' : '', 
-//                     'consumed' : '1',
-//                     'project' : dataform.find('#project').val(),
-//                     'module' : dataform.find('#module').val(),
-//                     'story' : '',
-//                     'assignedTo' : dataform.find('#assignedTo').val(),
-//                     'type' : dataform.find('#type').val(),
-//                     'status' : dataform.find('#status').val(),
-//                     'pri' : dataform.find('#pri').val(),
-//                     'mailto[]' : '',
-//                     'estStarted' : dataform.find('#estStarted').val(),
-//                     'realStarted' : dataform.find('#realStarted').val(),
-//                     'deadline' : dataform.find('#deadline').val(),
-//                     'estimate' : dataform.find('#estimate').val(),
-//                     'left' : dataform.find('#left').val(),
-//                     'finishedBy' : dataform.find('#finishedBy').val(),
-//                     'finishedDate' : dataform.find('#finishedDate').val(),
-//                     'canceledBy' :dataform.find('#canceledBy').val(),
-//                     'canceledDate' : dataform.find('#canceledDate').val(),
-//                     'closedBy' : dataform.find('#closedBy').val(),
-//                     'closedReason' : dataform.find('#closedReason').val(),
-//                     'closedDate' : dataform.find('#closedDate').val()
-//                 },
-//                 "boundary":"---------------------------WebKitFormBoundary"+getBoundary()
-//             };
-
-//             postRequest(options, function(statusCode) {
-
-//             });
-//         });
-// }
