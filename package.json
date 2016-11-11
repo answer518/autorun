@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "fs": "0.0.2",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "ssh2": "^0.5.2"
   },
   "devDependencies": {
     "cheerio": "^0.20.0",
