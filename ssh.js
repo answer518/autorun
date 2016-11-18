@@ -1,10 +1,10 @@
 'use strict'
 
-var options = {};
-options.port = 22;
-options.host = '10.100.15.85';
-options.user = 'root';
-options.password = 'maxthontest';
+// var options = {};
+// options.port = 22;
+// options.host = '10.100.15.85';
+// options.user = 'root';
+// options.password = 'maxthontest';
 
 // var ftp = module.exports;
 var Client = require('ssh2').Client;
@@ -111,19 +111,35 @@ function DownloadFile(server, remotePath, localPath, then) {
     });
 }
 
-Connect(options, function(conn) {
-    conn.shell(function(err, stream) {
-        if (err) throw err;
-        stream.on('close', function() {
-            console.log('Stream :: close');
-            conn.end();
-        }).on('data', function(data) {
-            console.log('STDOUT: ' + data);
-        }).stderr.on('data', function(data) {
-            console.log('STDERR: ' + data);
+function SvnUp(options) {
+    Connect(options, function(conn) {
+        conn.shell(function(err, stream) {
+            if (err) throw err;
+            stream.on('close', function() {
+                console.log('Stream :: close');
+                conn.end();
+            }).on('data', function(data) {
+                console.log('STDOUT: ' + data);
+            }).stderr.on('data', function(data) {
+                console.log('STDERR: ' + data);
+            });
+            stream.end('cd /data/html/pc-newtab.maxthon.com/wwwroot \nsvn up\n \nexit\n');
+            // stream.end('svn up \nexit\n');
+            // stream.end('ls -l\nexit\n');
         });
-        stream.end('cd /data/html/pc-newtab.maxthon.com/wwwroot \nsvn up\n \nexit\n');
-        // stream.end('svn up \nexit\n');
-        // stream.end('ls -l\nexit\n');
     });
+}
+
+SvnUp({
+    'port': 22,
+    'host': '10.100.15.85',
+    'user': 'root',
+    'password': 'maxthontest'
+});
+
+SvnUp({
+    'port':  22,
+    'host': '10.100.15.84',
+    'user': 'root',
+    'password': 'maxthontest'
 });
