@@ -117,7 +117,7 @@ function SvnUp(options) {
             }).stderr.on('data', function(data) {
                 console.log('STDERR: ' + data);
             });
-            stream.end('cd /data/html/pc-newtab.maxthon.com/wwwroot \nsvn up\n \nexit\n');
+            stream.end('cd /data/html/myhome/ \nsvn up\n \nexit\n');
             // stream.end('svn up \nexit\n');
             // stream.end('ls -l\nexit\n');
         });
