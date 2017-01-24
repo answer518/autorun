@@ -1,11 +1,5 @@
 'use strict'
 
-// var options = {};
-// options.port = 22;
-// options.host = '10.100.15.85';
-// options.user = 'root';
-// options.password = 'maxthontest';
-
 // var ftp = module.exports;
 var Client = require('ssh2').Client;
 var path = require('path');
@@ -132,14 +126,14 @@ function SvnUp(options) {
 
 SvnUp({
     'port': 22,
-    'host': '10.100.15.85',
-    'user': 'root',
-    'password': 'maxthontest'
+    'host': '127.0.0.1',
+    'user': 'test',
+    'password': 'test'
 });
 
 SvnUp({
     'port':  22,
-    'host': '10.100.15.84',
-    'user': 'root',
-    'password': 'maxthontest'
+    'host': '127.0.0.1',
+    'user': 'test',
+    'password': 'test'
 });
